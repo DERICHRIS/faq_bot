@@ -2,6 +2,6 @@ streamlit
 langchain
 langchain-community
 sentence-transformers
-chromadb
+faiss-cpu
 pandas
 protobuf==3.20.3

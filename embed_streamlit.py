@@ -1,14 +1,10 @@
-# --------- DISABLE CHROMA TELEMETRY ----------
-import os
-os.environ["CHROMA_TELEMETRY"] = "false"
-
 # --------- IMPORTS ----------
+import os
 import pandas as pd
 import streamlit as st
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
-from chromadb.config import Settings
 
 # --------- STREAMLIT PAGE CONFIG ----------
 st.set_page_config(page_title="Product FAQ Chatbot", page_icon="🛒")
@@ -25,15 +21,8 @@ def load_vectorstore():
 
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
-    # ✅ Disable Chroma telemetry + persistence to fix Streamlit Cloud error
-    client_settings = Settings(anonymized_telemetry=False, persist_directory=None)
-
-    vectorstore = Chroma.from_documents(
-        documents=docs,
-        embedding=embeddings,
-        client_settings=client_settings
-    )
-
+    # ✅ Use FAISS for in-memory vector storage (no crash)
+    vectorstore = FAISS.from_documents(docs, embeddings)
     return vectorstore
 
 vectorstore = load_vectorstore()
@@ -57,7 +46,7 @@ if user_query := st.chat_input("Type your question here..."):
 
     if relevant_docs:
         doc, score = relevant_docs[0]
-        threshold = 0.60  # Can be tuned
+        threshold = 0.60  # Can tune this if needed
         if score >= threshold:
             answer_text = doc.page_content
         else:
@@ -71,6 +60,6 @@ if user_query := st.chat_input("Type your question here..."):
 # --------- STEP 4: Sidebar Info ----------
 st.sidebar.title("About")
 st.sidebar.info(
-    "Built with ❤️ using LangChain, Chroma, HuggingFace, and Streamlit!\n\n"
+    "Built with ❤️ using LangChain, FAISS, HuggingFace, and Streamlit!\n\n"
     "Chatbot remembers conversation and safely handles unclear questions!"
 )
