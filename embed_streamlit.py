@@ -2,12 +2,18 @@
 # pip install streamlit langchain langchain-community sentence-transformers chromadb pandas
 
 # --------- IMPORTS ----------
-import os
+
 import pandas as pd
 import streamlit as st
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.schema import Document
+
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "false"
+os.environ["LANGCHAIN_ENDPOINT"] = ""
+os.environ["LANGCHAIN_API_KEY"] = ""
+os.environ["CHROMA_TELEMETRY"] = "false"
 
 # --------- VERY FIRST: PAGE SETTINGS (Important) ----------
 st.set_page_config(page_title="Product FAQ Chatbot", page_icon="🛒")

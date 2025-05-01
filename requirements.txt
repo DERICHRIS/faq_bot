@@ -4,3 +4,4 @@ langchain-community
 sentence-transformers
 chromadb
 pandas
+protobuf==3.20.3
